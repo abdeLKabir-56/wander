@@ -19,11 +19,25 @@ router.get('/login',  (req, res) =>
  *         description: Redirects to Google OAuth authentication page
  */
 
-router.get('/google', (req, res) => {
+/*router.get('/google', (req, res) => {
     // Handle with passport
     passport.authenticate('google', {
         scope: ['profile'] // What we want to retrieve from the client (id, email, picture...)
     })(req, res);
+});
+//callback redirect
+router.get('/google/redirect', passport.authenticate('google'),(req, res) =>
+{
+    res.send(req.user);
+});*/
+router.get('/google', passport.authenticate('google', {
+    scope: ['profile', 'email'] // Add 'email' scope if you need to retrieve the user's email
+}));
+
+// Route to handle Google OAuth callback
+router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+    // Redirect user or send user data
+    res.redirect('/'); // Redirect to the homepage or any other route
 });
 
 //auth with facebook
@@ -59,11 +73,7 @@ router.get('/logout', (req, res) =>
 });
 
 
-//callback redirect
-router.get('/google/redirect', passport.authenticate('google'),(req, res) =>
-{
-    res.send(' you are reached callback url');
-});
+
 
 
 module.exports = router;
