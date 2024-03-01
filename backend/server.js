@@ -4,15 +4,15 @@ const swaggerUi = require('swagger-ui-express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
-
 const authRoutes = require('./routers/auth-routes');
+const profileRoutes = require('./routers/profile-routes');
 const passportSetup = require('./config/passport-setup');
 const homeRoutes = require('./routers/home-routes');
 const keys = require('./config/keys');
 const uri = keys.mongodb.MONGO_URI;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Initialize MongoDB connection
 (async () => {
@@ -52,6 +52,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Mount auth routes
 app.use('/auth', authRoutes);
+
+// Mount profile routes
+
+app.use('/profile', profileRoutes);
 
 // Mount home page route
 app.use('/', homeRoutes);
