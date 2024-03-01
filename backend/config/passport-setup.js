@@ -1,23 +1,12 @@
-
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const keys = require('./keys');
 const User = require('../models/user');
+const { ObjectId } = require('mongoose').Types;
 
 
 
 
-//serialze the user
-passport.serializeUser((user,done)=>{
-    done(null,user.id);
-})
-//deserialze the user
-passport.deserializeUser((id,done)=>{
-    User.findById(id).then((user)=>{
-        done(null,user);
-    });
-    
-})
 
 passport.use(new GoogleStrategy({
     callbackURL: '/auth/google/redirect',
@@ -49,6 +38,24 @@ passport.use(new GoogleStrategy({
 }));
 
 
-
-
+passport.deserializeUser((id, done) => {
+    // Retrieve the user object from the database using the serialized ID
+    User.findById(id)
+      .then(user => {
+        if (!user) {
+          // User not found, return an error or 'false'
+          return done(null, false);
+        }
+        // User found, return the user object
+        done(null, user);
+      })
+      .catch(err => {
+        // Handle errors during database interaction
+        done(err, null);
+      });
+  });
+passport.serializeUser((user, done) => {
+    // Store the user's ID in the session
+    done(null, user._id); // Replace "_id" with your actual unique user identifier field
+  });
 module.exports = passport;

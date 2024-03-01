@@ -12,7 +12,7 @@ const keys = require('./config/keys');
 const uri = keys.mongodb.MONGO_URI;
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Initialize MongoDB connection
 (async () => {

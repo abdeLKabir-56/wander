@@ -1,10 +1,20 @@
 const router = require('express').Router();
 const passport = require('passport');
+const User = require('../models/user');
+const { ObjectId } = require('mongoose').Types;
 
 router.get('/login',  (req, res) => 
 {
     router.render('login');
 });
+
+
+
+
+
+
+
+
 
 //auth with google
 
@@ -19,17 +29,21 @@ router.get('/login',  (req, res) =>
  *         description: Redirects to Google OAuth authentication page
  */
 
-router.get('/google',passport.authenticate('google', {
-        scope: ['profile'] // What we want to retrieve from the client (id, email, picture...)
-    }));
-//callback redirect
-router.get('/google/redirect', passport.authenticate('google'),(req, res) =>
-{
-    //res.send(req.user);
-    //redirect the user to the profile page
-    res.redirect('/profile/');
+router.get('/google', passport.authenticate('google', {
+    scope: ['profile']
+}));
+
+// callback route for google to redirect to
+// hand control to passport to use code to grab profile info
+router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+    // res.send(req.user);
+    res.redirect('/profile');
 });
 
+
+
+
+// Deserialize user from session
 
 //auth with facebook
 
