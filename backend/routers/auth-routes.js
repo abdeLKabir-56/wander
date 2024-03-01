@@ -3,26 +3,27 @@ const passport = require('passport');
 const User = require('../models/user');
 const { ObjectId } = require('mongoose').Types;
 
+
+
+
+
+
+
 router.get('/login',  (req, res) => 
 {
-    router.render('login');
+    //res.render('login',{user: req.user});
+    //test 
+    res.send('login page');
 });
 
 
 
 
-
-
-
-
-
-//auth with google
-
 /**
  * @swagger
  * /auth/google:
  *   get:
- *     summary: Redirects to Google OAuth authentication
+ *     summary: Redirect to Google OAuth authentication
  *     description: Redirects the user to Google OAuth authentication page for login.
  *     responses:
  *       302:
@@ -33,8 +34,20 @@ router.get('/google', passport.authenticate('google', {
     scope: ['profile']
 }));
 
-// callback route for google to redirect to
-// hand control to passport to use code to grab profile info
+
+
+
+/**
+ * @swagger
+ * /auth/google/redirect:
+ *   get:
+ *     summary: Google OAuth redirect route
+ *     description: Callback route for Google OAuth authentication.
+ *     responses:
+ *       302:
+ *         description: Redirects to profile page upon successful authentication
+ */
+
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
     // res.send(req.user);
     res.redirect('/profile');
@@ -43,19 +56,15 @@ router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
 
 
 
-// Deserialize user from session
-
-//auth with facebook
-
 /**
  * @swagger
  * /auth/facebook:
  *   get:
- *     summary: Redirects to facebook OAuth authentication
- *     description: Redirects the user to facebook OAuth authentication page for login.
+ *     summary: Redirect to Facebook OAuth authentication
+ *     description: Redirects the user to Facebook OAuth authentication page for login.
  *     responses:
  *       302:
- *         description: Redirects to facebook OAuth authentication page
+ *         description: Redirects to Facebook OAuth authentication page
  */
 
 router.get('/facebook', (req, res) =>
@@ -66,15 +75,26 @@ router.get('/facebook', (req, res) =>
 
 });
 
-//auth logout
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   get:
+ *     summary: Logout user
+ *     description: Logs out the authenticated user.
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.get('/logout', (req, res) =>
 {
     //handel with passport
-
-    res.send('logout');
-
+    //res.send('logout');
+    req.logout();
+    res.redirect('/');
 });
 
 

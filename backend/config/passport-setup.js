@@ -15,6 +15,7 @@ passport.use(new GoogleStrategy({
     scope: ['profile', 'email']
 }, (accessToken, refreshToken, profile, done) => {
     //check if the user is already in the database
+    console.log(profile);
     User.findOne({id: profile.id}).then((currentUser) => {
         if(currentUser)
         {
@@ -26,7 +27,7 @@ passport.use(new GoogleStrategy({
             new User({
         id: profile.id,
         username: profile.displayName,
-        email: profile.email
+        image: profile._json.picture
     }).save()
         .then(newUser => {
             console.log('New user created: ', newUser);
