@@ -2,7 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Homepage</title>
+        <title>add-post</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <style>
             body{
                 font-family: arial;
@@ -45,6 +47,12 @@
             main p{
                 display: inline-block;
             }
+            .form{
+                width: 50%;
+                height: 50%;
+                margin-top: 20px;
+                margin-left: 170px;
+            }
         </style>
     </head>
     <body>
@@ -52,27 +60,32 @@
             <ul>
                 <% if (user) { %>
                 <li><a href="/auth/logout">Log out</a></li>
+                
                 <% } else { %>
                 <li><a href="/auth/login">Login</a></li>
+                
                 <% } %>
                 <li><a href="/">Homepage</a></li>
                 <li><a href="/profile">Profile</a></li>
-                <li><a href="/profile/create-blog">add Post</a></li>
             </ul>
         </nav>
-        <header>
-            <h1>Welcome to your profile, <%= user.username %></h1>
-        </header>
-        <main>
-            <img src="<%= user.image[0].value %>" />
-            <p>This is your profile photo</p>
-            <h4>First Name: <%= user.name.givenName %></h4>
-            <h4>Family Name: <%= user.name.familyName %></h4>
-            <h4>Email: <%= user.email %></h4>
-            <h4>Bio: <%= user.bio %></h4>
-        </main>
-        <main>
-            <a class="edit-profile" href="/profile/edit">edit-profile</a>
-        </main>
-        
+        <div class="form">
+            <h1>Create a New Post</h1>
+            <form action="/profile/add-blog" method="POST" class="form-group" >
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title" class="form-control" required><br><br>
+
+                <label for="body">Body:</label><br>
+                <textarea id="body" name="body" rows="10"  class="form-control" required></textarea><br><br>
+
+                
+
+                <label for="image">Image Url :</label><br>
+                <input type="text" id="imageUrl" name="imageUrl" ><br><br>
+
+                <button type="submit" class="btn btn-danger">Create Post</button>
+            </form>
+           
+    </div>
+    </body>
 </html>

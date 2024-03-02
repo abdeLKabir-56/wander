@@ -1,6 +1,8 @@
 // profile-routes.js
 const express = require('express');
 const router = express.Router();
+const userController = require('../controllers/userController');
+
 
 router.use((req, res, next) => {
   if (!req.user) {
@@ -35,5 +37,15 @@ router.get('/', (req, res) => {
   
   res.render('profile', {user: req.user});
 });
+
+router.get('/create-blog', (req, res) => {
+  res.render('Post', { user: req.user }); 
+});
+
+
+
+router.post('/add-blog', userController.addBlog);
+
+
 
 module.exports = router;
