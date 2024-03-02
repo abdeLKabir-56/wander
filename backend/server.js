@@ -9,15 +9,15 @@ const profileRoutes = require('./routers/profile-routes');
 const passportSetup = require('./config/passport-setup');
 const homeRoutes = require('./routers/home-routes');
 const keys = require('./config/keys');
-//const uri = keys.mongodb.MONGO_URI;//mongo db atlas
-const local_uri = keys.mongodb.localMongoDb;
+const uri = keys.mongodb.MONGO_URI;//mongo db atlas
+//const local_uri = keys.mongodb.localMongoDb;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize MongoDB connection
 (async () => {
   try {
-    await mongoose.connect(local_uri);
+    await mongoose.connect(uri);
     console.log("Connected successfully to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);

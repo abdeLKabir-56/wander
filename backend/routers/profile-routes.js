@@ -43,7 +43,10 @@ router.get('/create-blog', (req, res) => {
 });
 
 
+// Route to display all blogs
+router.get('/blogs', userController.getAllBlogs);
 
+// Route to handle adding a new blog
 router.post('/add-blog', userController.addBlog);
 
 

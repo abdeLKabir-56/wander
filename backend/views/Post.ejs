@@ -53,6 +53,10 @@
                 margin-top: 20px;
                 margin-left: 170px;
             }
+            .alert{
+                
+                margin-top: 20px;
+            }
         </style>
     </head>
     <body>
@@ -86,6 +90,11 @@
                 <button type="submit" class="btn btn-danger">Create Post</button>
             </form>
            
+            <% if(typeof message !== 'undefined'){ %>
+                <div class="alert alert-success alert" role="alert">
+                    <%= message %>
+                </div>
+            <% } %>
     </div>
     </body>
 </html>

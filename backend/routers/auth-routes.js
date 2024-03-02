@@ -73,7 +73,7 @@ router.get('/facebook',passport.authenticate('facebook',{
 
 router.get('/facebook/redirect',passport.authenticate('facebook'), (req, res) => {
     // res.send(req.user);
-    res.redirect('/profile');
+    res.redirect('/profile',{user:req.user});
 });
 
 /**
