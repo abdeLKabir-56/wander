@@ -7,10 +7,6 @@ const { ObjectId } = require('mongoose').Types;
 
 
 // facebook strategy implementation
-
-
-
-
 passport.use(new FacebookStrategy({
   clientID: keys.facebook.clientID,
   clientSecret: keys.facebook.ClientSecret,
@@ -47,8 +43,6 @@ function(accessToken, refreshToken, profile, cb) {
   })
 }
 ));
-
-
 
 // google strategy implementation
 passport.use(new GoogleStrategy({
