@@ -67,14 +67,14 @@ router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
  *         description: Redirects to Facebook OAuth authentication page
  */
 
-router.get('/facebook', (req, res) =>
-{
-    //handel with passport
+router.get('/facebook',passport.authenticate('facebook',{
+    scope: ['profile','email']
+}));
 
-    res.send('login with facebook');
-
+router.get('/facebook/redirect',passport.authenticate('facebook'), (req, res) => {
+    // res.send(req.user);
+    res.redirect('/profile');
 });
-
 
 /**
  * @swagger
