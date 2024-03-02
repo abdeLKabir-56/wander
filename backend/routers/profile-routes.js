@@ -31,9 +31,9 @@ router.use((req, res, next) => {
 
 router.get('/', (req, res) => {
   //test
-  res.send(`Welcome ${req.user.username}, this is your profile page`); 
+  //res.send(`Welcome ${req.user.username}, this is your profile page`); 
   
-  //res.render('profile', {user: req.user});
+  res.render('profile', {user: req.user});
 });
 
 module.exports = router;

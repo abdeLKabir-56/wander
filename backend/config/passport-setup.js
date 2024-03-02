@@ -27,7 +27,14 @@ passport.use(new GoogleStrategy({
             new User({
         id: profile.id,
         username: profile.displayName,
-        image: profile._json.picture
+        name: {
+          familyName: profile.name.familyName,
+          givenName: profile.name.givenName
+        },
+        image: profile.photos,
+        email: (profile.emails && profile.emails.length > 0) ? profile.emails[0].value : '',
+        bio: '' // You may set bio based on your requirement
+        
     }).save()
         .then(newUser => {
             console.log('New user created: ', newUser);

@@ -21,8 +21,8 @@ router.get('/', (req, res) => {
     //we pass the user into home page just for view botton controlling 
     //, for exemple afetr loging out the user sould not view logout botton or profile button
     //test 
-    res.send("here you should render the home page");
-    //res.render('index',{user: req.user});
+    //res.send("here you should render the home page");
+    res.render('home',{user: req.user});
     
 });
 
@@ -41,8 +41,8 @@ router.get('/', (req, res) => {
 
 router.get('/about', (req, res) => {
     //tset
-    res.send("here you should render the about page");
-    //res.render('about');
+   // res.send("here you should render the about page");
+    res.render('about');
     
 });
 

@@ -1,0 +1,1 @@
+this views is just for testing purposes and fetching data

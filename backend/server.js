@@ -34,6 +34,10 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// set view engine
+app.set('view engine', 'ejs');
+
+
 // Define Swagger options
 const options = {
   swaggerDefinition: {

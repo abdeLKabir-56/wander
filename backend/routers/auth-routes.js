@@ -11,9 +11,9 @@ const { ObjectId } = require('mongoose').Types;
 
 router.get('/login',  (req, res) => 
 {
-    //res.render('login',{user: req.user});
+    res.render('login',{user: req.user});
     //test 
-    res.send('login page');
+    //res.send('login page');
 });
 
 
@@ -31,7 +31,7 @@ router.get('/login',  (req, res) =>
  */
 
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile']
+    scope: ['profile','email']
 }));
 
 
