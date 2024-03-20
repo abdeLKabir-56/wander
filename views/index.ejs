@@ -1,0 +1,26 @@
+<div class="author">
+    <h1 class="author__heading">Hi, I am Wander</h1>
+    <p class="author__body">
+        A collaborative community dedicated to passionate travelers, travel bloggers, and curious explorers seeking authentic information and recommendations to inspire new journeys.</p>
+</div>
+<img src="/images/wnder-image.avif" alt="person looking out through window" class="hero-image" width="881" height="428">
+<section class="articles">
+    <h2 class="articles__heading">Latest Posts</h2>
+  
+    <ul class="article-ul">
+      <% blogs.forEach(post => { %>
+        <li>
+          <a href="/post/<%= post._id %>">
+            <span><%= post.title %> </span>
+            <span class="article-list__date"><%= post.createdAt.toDateString() %></span>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+
+
+  <% if (nextPage !== null) { %>
+    <a href="/?page=<%= nextPage %>" class="pagination">&lt; View Older Posts</a>
+  <% } %>
+    
+</section>

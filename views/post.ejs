@@ -1,0 +1,154 @@
+<style>
+    .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.share-interaction {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.share,
+.interaction-icons {
+    flex-basis: 48%;
+}
+
+.interaction-icons {
+    text-align: right;
+   
+    
+}
+.interaction-icons form {
+   
+    
+    display :inline-flex !important;
+}
+.interaction-icons form i{
+  font-size: 20px;
+}
+.interaction-icons form i :hover{
+  background-color: aliceblue;
+}
+.interaction-icons h2 {
+    display: inline-flex;
+    margin-left: 10px;
+}
+.comment-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 10px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+    }
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .user-info img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .user-info .username {
+        font-weight: bold;
+    }
+    .comment-content {
+        margin-bottom: 10px;
+    }
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .comment-actions button {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        margin-right: 10px;
+        color: #333;
+    }
+    .comment-actions button:hover {
+        text-decoration: underline;
+    }
+</style>
+<div class="container">
+    <h1><%= data.title %></h1>
+    <h4><%= data.author %> | Created At: <%= data.updatedAt.toDateString() %></h4>
+    <img src="<%= image %>" />
+
+    <article class="article">
+        <%= data.body %>
+    </article>
+    <br>
+    <hr> 
+
+    <div class="share-interaction">
+        <div class="share">
+            <p>This is a great article!</p>
+            <p>Share this article with your friends!</p>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:5000/post/<%= data._id %>" target="_blank">Share on Facebook</a>
+            <br>
+            <a href="https://twitter.com/intent/tweet?text=Check+out+this+great+article!+localhost:5000/post/<%= data._id %>" target="_blank">Share on Twitter</a>
+        </div>
+
+        <div class="interaction-icons">
+            <form action="/like" method="POST">
+                <input type="hidden" name="postId" value="<%= data._id %>">
+                <button type="submit"><i class="fa-regular fa-thumbs-up"></i><%= counts.likesCount %></button>
+            </form>
+           
+            <form action="/dislike" method="POST">
+                    <input type="hidden" name="postId" value="<%= data._id %>">
+                    <button type="submit"><i class="fa-regular fa-thumbs-down"></i><%= counts.dislikesCount %></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="comment">
+        <p>We are happy to hear from you</p>
+        <form action="/post/comments" method="post">
+            <input type="hidden" name="postId" value="<%= data._id %>">
+            <textarea id="Comment" name="Comment" rows="4" cols="50" placeholder="Comment text goes here..."></textarea>
+            <input type="submit" value="Publish" class="btn">
+        </form>
+        <p></p>
+    </div>
+
+    <div class="comments-section">
+        <h2>Comments </h2>
+        <span>(<%= counts.commentsCount %> comments)</span>
+        <ul>
+            <% if (postComment && postComment.length > 0) { %>
+                <% postComment.forEach(comment => { %>
+                    <div class="comment-container">
+                        <div class="user-info">
+                            
+                            <img src="../public/uploads/1710793612711.jpg" alt="User Avatar">
+                            <div class="username"><%= comment.author.username %></div>
+                            <div style="text-align: right;"><%= comment.createdAt.toDateString() %></div>
+                        </div>
+                        <div class="comment-content">
+                            <p> <%= comment.description %></p>
+                        </div>
+                        <div class="comment-actions">
+                            <button onclick="likeComment()">Like</button>
+                            <button onclick="shareComment()">Share</button>
+                            <button onclick="deleteComment()">Delete</button>
+                            <button onclick="updateComment()">Update</button>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <li>No comments yet.</li>
+            <% } %>
+        </ul>
+    </div>
+</div>
+<hr>
