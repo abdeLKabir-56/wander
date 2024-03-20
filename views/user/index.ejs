@@ -1,0 +1,28 @@
+<h3>Sign In</h3>
+<form action="/user" method="post">
+    <label for="username">Username</label>
+    <input type="text" name="username" id="username" placeholder="Enter your username here ..">
+    <label for="password">Password</label>
+    <input type="text" name="password" id="password" placeholder="Enter your password here ..">
+    <input type="submit" value="Login" class="btn">
+    <hr>
+    Or Sign In With
+    <main>
+        <a class="google-btn" href="/auth/google">Google</a>
+        <a class="facebook-btn" href="/auth/facebook">facebook</a>
+    </main>
+</form>
+<h3>Register</h3>
+<form action="/register" method="post">
+    <label for="username"><b>Username</b></label>
+    <input type="text" name="username" id="username" placeholder="Enter your username here ..">
+    <label for="password"><b>Password</b></label>
+    <input type="text" name="password" id="password" placeholder="Enter your password here ..">
+    <input type="submit" value="Register" class="btn">
+    <hr>
+    Or Register With
+    <main>
+        <a class="google-btn" href="/auth/google">Google</a>
+        <a class="facebook-btn" href="/auth/facebook">facebook</a>
+    </main>
+</form>
