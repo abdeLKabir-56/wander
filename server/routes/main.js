@@ -108,7 +108,8 @@ router.get('/post/:id', async (req, res) => {
         const postComment = data.comments;
         const commentsCount = data.comments ? data.comments.length : 0;
         const likesCount = data.likes ? data.likes.length : 0;
-        res.render('post', {locals,data,postComment,user : req.cookies.token,counts: { commentsCount, likesCount }, image: data.image});
+        const dislikesCount = data.dislikes ? data.dislikes.length : 0;
+        res.render('post', {locals,data,postComment,user : req.cookies.token,counts: { commentsCount, likesCount,dislikesCount }, image: data.image});
     }
     catch(error){
         console.log(error);
@@ -145,43 +146,6 @@ router.post('/search', async (req, res) => {
     }
   
   });
-
-
-
-
-
-//post data insertion
- /*function postDataInsert(req, res) {
-    Post.insertMany([
-        {
-            title: 'Example Post 1',
-            body: 'This is the body of Example Post 1.'
-          },
-          {
-            title: 'Example Post 2',
-            body: 'This is the body of Example Post 2.'
-          },
-          {
-            title: 'Example Post 3',
-            body: 'This is the body of Example Post 3.'
-          },
-          {
-            title: 'Example Post 4',
-            body: 'This is the body of Example Post 4.'
-          },
-          {
-            title: 'Example Post 5',
-            body: 'This is the body of Example Post 5.'
-          }])
-    } 
-
-postDataInsert();*/
-
-
-
-
-
-
 
 router.post('/chat', async (req, res) => {
   try {
