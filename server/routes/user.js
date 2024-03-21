@@ -23,8 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-
-
 router.get('/user', async (req, res) => {
     
     try{
@@ -207,6 +205,21 @@ router.post('/like', isAuth('user'),async (req, res) => {
         const userId = req.userId;
         const updatedPost = await Post.findByIdAndUpdate(postId,
             { $addToSet: { likes: userId } },
+            { new: true }
+        ).exec();
+        res.redirect(`/post/${postId}`);
+   } catch (error) {
+       console.log(error);
+   }
+});
+//dislike
+router.post('/dislike', isAuth('user'),async (req, res) => {
+
+    try {
+        const postId = req.body.postId;
+        const userId = req.userId;
+        const updatedPost = await Post.findByIdAndUpdate(postId,
+            { $addToSet: { dislikes: userId } },
             { new: true }
         ).exec();
         res.redirect(`/post/${postId}`);
