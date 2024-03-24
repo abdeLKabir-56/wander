@@ -1,15 +1,15 @@
-<h3>Sign In</h3>
-<form action="/user" method="post">
-    <label for="username">Username</label>
+<a href="/user">&larr; Back</a>
+<h3>Register</h3>
+<form action="/register" method="post">
+    <label for="username"><b>Username</b></label>
     <input type="text" name="username" id="username" placeholder="Enter your username here ..">
-    <label for="password">Password</label>
+    <label for="password"><b>Password</b></label>
     <input type="text" name="password" id="password" placeholder="Enter your password here ..">
-    <input type="submit" value="Login" class="btn">
+    <input type="submit" value="Register" class="btn">
     <hr>
-    Or Sign In With
+    Or Register With
     <main>
         <a class="google-btn" href="/auth/google">Google</a>
         <a class="facebook-btn" href="/auth/facebook">facebook</a>
     </main>
-    <a href="/register">create account ?</a>
 </form>

@@ -4,6 +4,7 @@ const router = express.Router();
 const Post = require('../models/blog');
 const User = require('../models/user');
 const Comment = require('../models/comment');
+const Categorie = require('../models/categorie');
 const authorLayout ='../views/layouts/author';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -11,15 +12,23 @@ const jwtSecret = process.env.JWT_SECRET_KEY;
 const  isAuth = require('../middleware/auth');
 const fs = require('fs');
 const multer = require('multer');
-const path = require('path'); 
+const path = require('path');
+
+const uploadDir = path.join(__dirname, '../public/uploads/');
+
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '/Users/info/Desktop/social_media_blog_platform_project/public/uploads')
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
+
 const upload = multer({ storage: storage });
 
 
@@ -79,7 +88,8 @@ router.get('/dashboard', isAuth('user'), async (req, res) => {
             title: 'user dashboard',
             content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
         };
-        const data = await Post.find({ author:  req.user });
+        const data = await Post.find({ author:  req.userId });
+        //console.log(data);
         res.render('user/dashboard', { data, locals,layout : authorLayout ,user :  req.cookies.token });
     } catch (error) {
         console.log(error);
@@ -87,32 +97,40 @@ router.get('/dashboard', isAuth('user'), async (req, res) => {
     }
 });
 
+
 router.get('/add-post', isAuth('user'), async (req, res) => {
     try {
+        const data = await Post.find({ author: req.userId });
         const locals = {
             title: 'Add Post',
             content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
         };
-        const data = await Post.find({ author: req.userId });
-
-        res.render('user/add-post', { data, locals,layout : authorLayout });
+        res.render('user/add-post', { data, locals, layout: authorLayout });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
 
-router.post('/add-post', isAuth('user'),upload.single('image'), async (req, res) => {
-    try {
-        const newPost = new Post({
-            title: req.body.title,
-            body: req.body.body,
-            author: req.userId,
-            image: req.file.path
-        });
-        
-        await newPost.save();
 
+router.post('/add-post', isAuth('user'), upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Please upload an image file' });
+        }
+
+        const imageUrl = req.file.filename;
+        const { title, body ,categorie} = req.body;
+        const author = req.userId;
+        const categoriesIds = Array.isArray(categorie) ? categorie.map(cat => new ObjectId(cat)) : [];
+        const newPost = new Post({
+            title,
+            body,
+            author,
+            image: imageUrl,
+            categories: categoriesIds,
+        });
+        await newPost.save();
         res.redirect('/dashboard');
     } catch (error) {
         console.error(error);
@@ -128,7 +146,7 @@ router.get('/edit-post/:id', isAuth('user'),async (req, res) => {
             content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
         };
         const data = await Post.findOne({ _id: req.params.id});
-        res.render('admin/edit-post', { data, locals,layout : authorLayout });
+        res.render('user/edit-post', { data, locals,layout : authorLayout });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -138,12 +156,14 @@ router.get('/edit-post/:id', isAuth('user'),async (req, res) => {
 
 router.put('/edit-post/:id', isAuth('user'), async (req, res) => {
     try {
+        console.log(req.file);
         await Post.findByIdAndUpdate(req.params.id,{
             title: req.body.title,
             body: req.body.body,
             author: req.userId,
             updatedAt: Date.now(),
-            image: req.file.path
+            image: req.file,
+            categories :[req.body.categorie],
             });
             res.redirect(`/edit-post/${req.params.id}`);
     } catch (error) {
@@ -164,7 +184,7 @@ router.delete('/delete-post/:id', isAuth('user'), async (req, res) => {
 });
 
 
-//Admin - register
+//user - register
 router.post('/register', async (req, res) => {
     
     try{
@@ -191,7 +211,7 @@ router.post('/register', async (req, res) => {
     
 });
 
-//admin logout
+//user logout
 router.get('/logout', async (req, res) => {
 res.clearCookie('token');
 res.redirect('/');
@@ -227,30 +247,18 @@ router.post('/dislike', isAuth('user'),async (req, res) => {
        console.log(error);
    }
 });
-//comment post route
-router.post('/post/comments', isAuth('user'), async (req, res) => {
+//signaler
+router.post('/signaler', isAuth('user'), async (req, res) => {
     try {
-       const description = req.body.Comment;
-       const postId = req.body.postId;
-       const author = req.userId;
-        const locals = {
-            title: 'Post comments',
-            content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
-        };
-        const comment = new Comment({
-            description : description,
-            author : author,
-        });
-        const updatedPost = await Post.findByIdAndUpdate(postId,
-            { $addToSet: { comments: comment } },
-            { new: true }
-        ).exec();
-        await comment.save();
+        const userId = req.userId;
+        const postId = req.body.postId;
+        await Post.findByIdAndUpdate(postId, { $set: { signaler: true } });  
         res.redirect(`/post/${postId}`);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 module.exports =router;

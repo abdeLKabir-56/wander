@@ -89,7 +89,10 @@ router.get('/admin_dashboard', isAuth('admin'), async (req, res) => {
             content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
         };
         const data = await User.find(); 
-        res.render('admin/admin_dashboard', { users: data, locals,layout : adminLayout ,user :  req.cookies.token });
+        const postSignalerData = await Post.find({ signaler: true });
+
+        console.log('Post Signaler Data:', postSignalerData);
+        res.render('admin/admin_dashboard', { users: data, locals,layout : adminLayout  ,PostSignaler: postSignalerData,user :  req.cookies.token });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -118,14 +121,37 @@ router.get('/allUsers',isAuth('admin'), async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+//get all Post signaler 
+
+router.get('/allPostSignaler', isAuth('admin'), async (req, res) => {
+    try {
+        const locals = {
+            title: 'ALL Post Signaler',
+            content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+        };
+
+        const postSignalerData = await Post.find({ signaler: true });
+
+        //console.log('Post Signaler Data:', postSignalerData);
+
+        res.render('admin/admin_dashboard', {
+            user: req.cookies.token,
+            PostSignaler: postSignalerData,
+            locals,
+            layout: adminLayout
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 //  ban a user
 router.put('/ban-user/:id', isAuth('admin'), async (req, res) => {
     try {
         const userId = req.params.id; 
-        await User.findByIdAndUpdate(userId, { $set: { banned: true } });
-        
-        
+        await User.findByIdAndUpdate(userId, { $set: { banned: true } });  
         res.redirect('/admin_dashboard');
     } catch (error) {
         console.log(error);
@@ -145,4 +171,15 @@ router.put('/unban-user/:id', isAuth('admin'), async (req, res) => {
     }
 });
 
+// delete les postes signialer
+
+router.delete('/admin/delete-post/:id', isAuth('admin'), async (req, res) => {
+    try {
+        
+         await Post.deleteOne({_id: req.params.id});
+         res.redirect('/admin_dashboard');
+    } catch (error) {
+        console.log(error);
+    }
+});
 module.exports =router;

@@ -11,12 +11,16 @@
 <form action="/edit-post/<%= data._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 
   <label for="title"><b>Title</b></label>
-  <input type="text" placeholder="Post Title" name="title" value="<%= data.title %>">
+  <input type="text" id="title" placeholder="Post Title" name="title" value="<%= data.title %>" required>
 
   <label for="body"><b>Content</b></label>
-  <textarea name="body" cols="50" rows="10"><%= data.body %></textarea>
-  <label for="image">Upload Image</label>
-  <input type="file" id="image" name="image" value="<%= data.image %>" required />
-  <input type="submit" value="Update" class="btn">
+  <textarea id="body" name="body" cols="50" rows="10" required><%= data.body %></textarea>
 
+  <label for="image"><b>Upload Image</b></label>
+  <input type="file" id="image" name="image" accept="image/*" required>
+  <br>
+  <label for="categorie"><b>in witch categorie ? </b></label>
+  <input type="text" id="categorie" placeholder="Post Categories" name="categorie" >
+  
+  <input type="submit" value="Update" class="btn">
 </form>

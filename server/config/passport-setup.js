@@ -66,38 +66,38 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({
     callbackURL: '/auth/google/redirect',
     clientID: keys.google.clientID,
-    clientSecret: keys.google.ClientSecret,
+    clientSecret: keys.google.ClientSecret, // Corrected property name
     scope: ['profile', 'email']
-}, (accessToken, refreshToken, profile, done) => {
-    User.findOne({id: profile.id}).then((currentUser) => {
-        if(currentUser)
-        {
-            // already in the database
-           console.log('user is already in'+currentUser);
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        let currentUser = await User.findOne({ id: profile.id });
+        if (currentUser) {
+            // User already exists
+            console.log('User already exists:', currentUser);
             done(null, currentUser);
-        }else{
-            // create a new user
-            new User({
-        id: profile.id,
-        username: profile.displayName,
-        name: {
-          familyName: profile.name.familyName,
-          givenName: profile.name.givenName
-        },
-        image: profile.photos,
-        email: (profile.emails && profile.emails.length > 0) ? profile.emails[0].value : '',
-        bio: ''
-        
-    }).save()
-        .then(newUser => {
-            console.log('New user created: ', newUser);
-        })
-        .catch(err => console.error('Error creating new user:', err));
+        } else {
+            // Create a new user
+            const newUser = new User({
+                id: profile.id,
+                username: profile.displayName,
+                name: {
+                    familyName: profile.name.familyName,
+                    givenName: profile.name.givenName
+                },
+                image: profile.photos,
+                email: (profile.emails && profile.emails.length > 0) ? profile.emails[0].value : '',
+                bio: ''
+            });
+            await newUser.save();
+            console.log('New user created:', newUser);
+            done(null, newUser);
         }
-    })
-
-    
+    } catch (err) {
+        console.error('Error in Google authentication:', err);
+        done(err);
+    }
 }));
+
 
 passport.deserializeUser((id, done) => {
     User.findById(id)

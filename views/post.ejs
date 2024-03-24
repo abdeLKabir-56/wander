@@ -1,7 +1,11 @@
+</head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../public/js/script.js"></script>
+
 <style>
     .container {
     max-width: 800px;
-    margin: 20px auto;
+    
     padding: 0 20px;
 }
 
@@ -39,11 +43,14 @@
 .comment-container {
         width: 100%;
         max-width: 600px;
-        margin: 10px auto;
+        /*margin: 10px auto;*/
+        margin-right: 10%;
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 10px;
+        margin-top: 20px;
+        display: block;
     }
     .user-info {
         display: flex;
@@ -77,11 +84,41 @@
     .comment-actions button:hover {
         text-decoration: underline;
     }
+    .comments-section{
+        display: block;
+    }
+   
 </style>
+<head>
 <div class="container">
     <h1><%= data.title %></h1>
-    <h4><%= data.author.username %> | Created At: <%= data.updatedAt.toDateString() %></h4>
-    <img src="<%= image %>" />
+    <h5><% if (data.author) { %>
+        <%= data.author.username || '' %> |
+         Created At: <%= data.updatedAt.toDateString() %> 
+        | <i class="fa-regular fa-eye"></i> <span id="visitor-count"> |
+             </span> |<i class="fa-solid fa-icons"></i>
+        <% if (data.categories && data.categories.length > 0 && data.categories[0]) { %>
+            <%= data.categories[0].toString() %>
+        <% } else { %>
+            No category available
+        <% } %></h5>
+    <h5><% } else { %>
+        Unknown Author |
+         Created At: <%= data.updatedAt.toDateString() %> 
+        | <i class="fa-regular fa-eye"></i> <span id="visitor-count"></span> |
+        <i class="fa-solid fa-icons"></i>
+        <% if (data.categories && data.categories.length > 0 && data.categories[0]) { %>
+            <%= data.categories[0].toString() %>
+        <% } else { %>
+            No category available
+        <% } %>
+    <% } %></h5>
+    
+    
+
+   
+    <img src="/uploads/<%= data.image %>" />
+
 
     <article class="article">
         <%= data.body %>
@@ -92,7 +129,10 @@
     <div class="share-interaction">
         <div class="share">
             <p>This is a great article!</p>
-            <p>Share this article with your friends!</p>
+            <p>Share this article with your friends!   
+            <button id="shareBtn"><i class="fa-solid fa-share-nodes"></i></button>
+                <p class="result"></p>
+            </p>
             <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:5000/post/<%= data._id %>" target="_blank">Share on Facebook</a>
             <br>
             <a href="https://twitter.com/intent/tweet?text=Check+out+this+great+article!+localhost:5000/post/<%= data._id %>" target="_blank">Share on Twitter</a>
@@ -108,14 +148,18 @@
                     <input type="hidden" name="postId" value="<%= data._id %>">
                     <button type="submit"><i class="fa-regular fa-thumbs-down"></i><%= counts.dislikesCount %></button>
             </form>
+            <form action="/signaler" method="POST">
+                <input type="hidden" name="postId" value="<%= data._id %>">
+                <button type="submit"><i class="fa-solid fa-circle-exclamation" style="color: #f70202;"></i> signaler le post</button>
+            </form>
         </div>
     </div>
-
+    
     <div class="comment">
         <p>We are happy to hear from you</p>
         <form action="/post/comments" method="post">
             <input type="hidden" name="postId" value="<%= data._id %>">
-            <textarea id="Comment" name="Comment" rows="4" cols="50" placeholder="Comment text goes here..."></textarea>
+            <textarea id="Comment" name="Comment" rows="4" cols="50" placeholder="Comment text goes here..." ></textarea>
             <input type="submit" value="Publish" class="btn">
         </form>
         <p></p>
@@ -130,7 +174,8 @@
                     <div class="comment-container">
                         <div class="user-info">
                             
-                            <img src="../public/uploads/1710793612711.jpg" alt="User Avatar">
+                            <!--<img src="../public/images/user-avatar.png" alt="User Avatar">-->
+                            <i class="fa-regular fa-user-circle" style="font-size: 20px; padding-right: 75%;"></i>
                             <div class="username"><%= comment.author.username %></div>
                             <div style="text-align: right;"><%= comment.createdAt.toDateString() %></div>
                         </div>
@@ -138,10 +183,33 @@
                             <p> <%= comment.description %></p>
                         </div>
                         <div class="comment-actions">
-                            <button onclick="likeComment()">Like</button>
-                            <button onclick="shareComment()">Share</button>
-                            <button onclick="deleteComment()">Delete</button>
-                            <button onclick="updateComment()">Update</button>
+                            <form action="/comment/like" method="POST">
+                                <input type="hidden" name="postId" value="<%= data._id %>">
+                                <input type="hidden" name="commentId" value="<%= comment._id %>">
+                                <button type="submit"><i class="fa-regular fa-thumbs-up"></i></button>
+                            </form>
+                            <button id="shareBtn"><i class="fa-solid fa-share-nodes"></i></button>
+                                <p class="result"></p>
+                            <form action="/delete-comment/<%= comment._id %>?_method=DELETE" method="POST">
+                                <input type="hidden" name="postId" value="<%= data._id %>">
+                                <input type="submit" value="Delete" class="btn-delete btn">
+                              </form>
+                              <button onclick="toggleEditForm(event)">Edit</button>
+
+                              
+                              <form class="editForm" action="/edit-comment/<%= comment._id %>?_method=PUT" method="POST" >
+                                 
+                                  <div class="form-group">
+                                      <input type="hidden" name="postId" value="<%= data._id %>">
+                                      <input type="hidden" name="commentId" value="<%= comment._id %>">
+                                      <label for="Comment">Edit comment</label>
+                                      <textarea class="form-control" name="description" id="Comment<%= comment._id %>" rows="3" placeholder="Type here"><%= comment.description %></textarea>
+                                  </div>
+                                  <!-- Submit button -->
+                                  <input type="submit" class="btn btn-primary" value="Save">
+                              </form>
+
+                            </div>
                         </div>
                     </div>
                 <% }) %>
@@ -151,4 +219,4 @@
         </ul>
     </div>
 </div>
-<hr>
+

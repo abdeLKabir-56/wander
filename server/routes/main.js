@@ -113,6 +113,7 @@ router.get('/post/:id', async (req, res) => {
     }
     catch(error){
         console.log(error);
+        res.redirect('/');
     }
     
 });
@@ -131,7 +132,8 @@ router.post('/search', async (req, res) => {
       const data = await Post.find({
         $or: [
           { title: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
-          { body: { $regex: new RegExp(searchNoSpecialChar, 'i') }}
+          { body: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
+          {categories: [{ $regex: new RegExp(searchNoSpecialChar, 'i')}]}
         ]
       });
   
@@ -177,7 +179,68 @@ router.get('/contact', (req, res) => {
 
 //sign in
 
-router.get('/signIn', (req, res) => {
-    res.render('sign',{user : req.cookies.token});
+router.get('/register', (req, res) => {
+    res.render('Register',{user : req.cookies.token});
+});
+
+
+
+//satastics
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+
+const canvasRenderService = new ChartJSNodeCanvas({ width: 800, height: 600 });
+
+const configuration = {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+};
+
+async function renderChart() {
+  try {
+    const image = await canvasRenderService.renderToBuffer(configuration);
+    return image;
+  } catch (err) {
+    throw err;
+  }
+}
+
+router.get('/chart', async (req, res) => {
+  try {
+    const chartImage = await renderChart();
+    res.set('Content-Type', 'image/png');
+    res.send(chartImage);
+  } catch (err) {
+    res.status(500).send('Error generating chart image');
+  }
 });
 module.exports = router;
