@@ -35,15 +35,15 @@ const postSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    categories : [{
+    categorie : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Categorie'
-    }],
+    },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
-    visitors: [
+    visitors: 
         {
             timestamp: {
                 type: Date,
@@ -54,7 +54,7 @@ const postSchema = new Schema({
                 default: 0
             }
         }
-    ],
+    ,
     signaler :{
         type: Boolean,
         default: false

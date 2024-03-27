@@ -53,7 +53,6 @@ router.post('/user', async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
-        console.log(user.banned );
         if (!user) {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
@@ -98,90 +97,6 @@ router.get('/dashboard', isAuth('user'), async (req, res) => {
 });
 
 
-router.get('/add-post', isAuth('user'), async (req, res) => {
-    try {
-        const data = await Post.find({ author: req.userId });
-        const locals = {
-            title: 'Add Post',
-            content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
-        };
-        res.render('user/add-post', { data, locals, layout: authorLayout });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-
-router.post('/add-post', isAuth('user'), upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'Please upload an image file' });
-        }
-
-        const imageUrl = req.file.filename;
-        const { title, body ,categorie} = req.body;
-        const author = req.userId;
-        const categoriesIds = Array.isArray(categorie) ? categorie.map(cat => new ObjectId(cat)) : [];
-        const newPost = new Post({
-            title,
-            body,
-            author,
-            image: imageUrl,
-            categories: categoriesIds,
-        });
-        await newPost.save();
-        res.redirect('/dashboard');
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-
-router.get('/edit-post/:id', isAuth('user'),async (req, res) => {
-    try {
-        const locals = {
-            title: 'Edit Post',
-            content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
-        };
-        const data = await Post.findOne({ _id: req.params.id});
-        res.render('user/edit-post', { data, locals,layout : authorLayout });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-
-router.put('/edit-post/:id', isAuth('user'), async (req, res) => {
-    try {
-        console.log(req.file);
-        await Post.findByIdAndUpdate(req.params.id,{
-            title: req.body.title,
-            body: req.body.body,
-            author: req.userId,
-            updatedAt: Date.now(),
-            image: req.file,
-            categories :[req.body.categorie],
-            });
-            res.redirect(`/edit-post/${req.params.id}`);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-
-router.delete('/delete-post/:id', isAuth('user'), async (req, res) => {
-    try {
-        
-         await Post.deleteOne({_id: req.params.id});
-        res.redirect('/dashboard');
-    } catch (error) {
-        console.log(error);
-    }
-});
 
 
 //user - register
@@ -217,6 +132,99 @@ res.clearCookie('token');
 res.redirect('/');
 
 });
+
+router.get('/add-post', isAuth('user'), async (req, res) => {
+    try {
+        const data = await Post.find({ author: req.userId });
+        const locals = {
+            title: 'Add Post',
+            content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
+        };
+        res.render('user/add-post', { data, locals, layout: authorLayout });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+router.post('/add-post', isAuth('user'), upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Please upload an image file' });
+        }
+
+        const imageUrl = req.file.filename;
+        const { title, body ,categorie} = req.body;
+        const author = req.userId;
+        const category = new Categorie({
+            Description: categorie,
+                author: author,
+        });
+        await category.save();
+        const newPost = new Post({
+            title,
+            body,
+            author,
+            image: imageUrl,
+            categorie: category,
+        });
+        await newPost.save();
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.get('/edit-post/:id', isAuth('user'),async (req, res) => {
+    try {
+        const locals = {
+            title: 'Edit Post',
+            content: 'lorem Ipsum is simply dumm dolor Lorem Ipsum is simply ipsum. Lorem Ips'
+        };
+        const data = await Post.findOne({ _id: req.params.id});
+        res.render('user/edit-post', { data, locals,layout : authorLayout });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.put('/edit-post/:id', isAuth('user'), async (req, res) => {
+    try {
+        //console.log(req.file);
+        const category = new Categorie({
+            Description: categorie,
+                author: author,
+        });
+        await Post.findByIdAndUpdate(req.params.id,{
+            title: req.body.title,
+            body: req.body.body,
+            author: req.userId,
+            updatedAt: Date.now(),
+            image: req.file,
+            categorie: category,
+            });
+            res.redirect(`/edit-post/${req.params.id}`);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.delete('/delete-post/:id', isAuth('user'), async (req, res) => {
+    try {
+        
+         await Post.deleteOne({_id: req.params.id});
+        res.redirect('/dashboard');
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
 //like
 router.post('/like', isAuth('user'),async (req, res) => {
 
@@ -247,6 +255,7 @@ router.post('/dislike', isAuth('user'),async (req, res) => {
        console.log(error);
    }
 });
+
 //signaler
 router.post('/signaler', isAuth('user'), async (req, res) => {
     try {
@@ -259,6 +268,36 @@ router.post('/signaler', isAuth('user'), async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+/*router.put('/visit-counter/:id', async (req, res) => {
+    try {
+      const postId = req.params.id;
+  
+      // Find the post
+      const post = await Post.findById(postId);
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { count: 1 } },
+        { new: true } 
+      );
+  
+      const visitorCount = updatedPost.count;
+      if (io) {
+        io.emit('visitorCount', { postId, visitorCount });
+      } else {
+        console.log(`Socket.IO not found. Skipping real-time update for post ${postId}`);
+      }
+      console.log(`Visitor count for post ${postId} updated to ${visitorCount}`);
+     // res.render('post', { post, visitorCount });
+    } catch (error) {
+      console.error("Error updating visitor count:", error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });*/
+
 
 
 module.exports =router;

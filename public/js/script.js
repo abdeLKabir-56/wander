@@ -77,14 +77,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// visit counter
+//visit counter
+
 const socket = io();
+      const visitorCountEl = document.getElementById('visitor-count');
 
-const visitorCountEl = document.getElementById('visitor-count');
+      socket.on('visitorCount', (data) => {
+       /* if (data.postId === '<%= post._id %>') {
+          visitorCountEl.textContent = data.visitorCount;
+        }*/
+        visitorCountEl.textContent = data.visitorCount;
+      });
 
-socket.on('visitorCount', (count) => {
-    visitorCountEl.textContent = count;
-});
+
+
 
 function toggleEditForm(event) {
   const commentContainer = event.target.closest('.comment-container');
@@ -98,6 +104,8 @@ function toggleEditForm(event) {
     
   }
 }
+
+
 
 document.querySelectorAll('.comment-actions button[data-action="edit"]').forEach(button => {
   button.addEventListener('click', toggleEditForm);

@@ -95,20 +95,20 @@
     <h5><% if (data.author) { %>
         <%= data.author.username || '' %> |
          Created At: <%= data.updatedAt.toDateString() %> 
-        | <i class="fa-regular fa-eye"></i> <span id="visitor-count"> |
+        | <i class="fa-regular fa-eye"></i> <span id="visitor-count" ></span> |
              </span> |<i class="fa-solid fa-icons"></i>
-        <% if (data.categories && data.categories.length > 0 && data.categories[0]) { %>
-            <%= data.categories[0].toString() %>
+        <% if (data.categorie.Description !== '') { %>
+            <%= data.categorie.Description%>
         <% } else { %>
             No category available
         <% } %></h5>
     <h5><% } else { %>
         Unknown Author |
          Created At: <%= data.updatedAt.toDateString() %> 
-        | <i class="fa-regular fa-eye"></i> <span id="visitor-count"></span> |
+        | <i class="fa-regular fa-eye"></i> <span id="visitor-count" data-post-id="<%= data._id %>"></span> |
         <i class="fa-solid fa-icons"></i>
-        <% if (data.categories && data.categories.length > 0 && data.categories[0]) { %>
-            <%= data.categories[0].toString() %>
+        <% if (data.categorie.Description !== '') { %>
+            <%= data.categorie.Description %>
         <% } else { %>
             No category available
         <% } %>

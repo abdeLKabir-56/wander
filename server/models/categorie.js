@@ -13,8 +13,7 @@ const categorieSchema = new Schema({
     },
     post: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-        required: true
+        ref: 'Post'
     },
 });
 

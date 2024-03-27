@@ -19,13 +19,14 @@ const { Server } = require('socket.io');
 const { createCanvas } = require('canvas');
 const server = http.createServer(app);
 const io = new Server(server);
+const Post = require('./server/models/blog');
+
 
 // Import routes
 const mainRoutes = require('./server/routes/main');
 const userRoutes = require('./server/routes/user');
 const adminRoutes = require('./server/routes/admin');
 const commentRoutes = require('./server/routes/comment');
-
 //database connection
 connectDB();
 
@@ -40,7 +41,6 @@ io.on('connection', (socket) => {
         io.emit('visitorCount', visitorCount);
     });
 });
-
 //middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
