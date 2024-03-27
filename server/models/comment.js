@@ -23,7 +23,13 @@ const commentSchema = new Schema({
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    post: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        required: true
+    },
+
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

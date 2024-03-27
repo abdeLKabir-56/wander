@@ -5,6 +5,10 @@ const Post = require('../models/blog');
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 const MODEL_NAME = "gemini-pro";
 const API_KEY = process.env.CHAT_API_KEY;
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const canvasRenderService = new ChartJSNodeCanvas({ width: 800, height: 600 });
+
+
 
 async function runChat(userInput) {
   const genAI = new GoogleGenerativeAI(API_KEY);
@@ -78,7 +82,7 @@ router.get('/', async (req, res) => {
         const count = await Post.countDocuments({});
         const nextPage = parseInt(page) + 1;
         const hasNextPage = nextPage <= Math.ceil(count / perPage);
-        console.log(req.user);
+        //console.log(req.user);
         res.render('index',{
             user : req.cookies.token,
             blogs : data,
@@ -93,35 +97,39 @@ router.get('/', async (req, res) => {
     }
     
 });
+
 router.get('/post/:id', async (req, res) => {
     
-    try{
-      
-        let id = req.params.id;
-        const data = await Post.findById({_id : id})
-        .populate('author', 'username')
-        .populate('comments');
-        const locals ={
-            title: data.title,
-            content : 'lorem Ipsum  is simply dumm  dolor Lorem Ipsum is simply ipsum. Lorem Ips'
-        }
-        const postComment = data.comments;
-        const commentsCount = data.comments ? data.comments.length : 0;
-        const likesCount = data.likes ? data.likes.length : 0;
-        const dislikesCount = data.dislikes ? data.dislikes.length : 0;
-        res.render('post', {locals,data,postComment,user : req.cookies.token,counts: { commentsCount, likesCount,dislikesCount }, image: data.image});
-    }
-    catch(error){
-        console.log(error);
-    }
+  try{
     
+      let id = req.params.id;
+      const data = await Post.findById({_id : id})
+      .populate('author', 'username')
+      .populate('comments')
+      .populate('categorie', 'Description');
+      const locals ={
+          title: data.title,
+          content : 'lorem Ipsum  is simply dumm  dolor Lorem Ipsum is simply ipsum. Lorem Ips'
+      }
+      const postComment = data.comments;
+      const commentsCount = data.comments ? data.comments.length : 0;
+      const likesCount = data.likes ? data.likes.length : 0;
+      const dislikesCount = data.dislikes ? data.dislikes.length : 0;
+      //const visitorCount = data.visitors.count;
+      res.render('post', {locals,data,postComment,user : req.cookies.token,counts: { commentsCount, likesCount,dislikesCount }, image: data.image});
+  }
+  catch(error){
+      console.log(error);
+      res.redirect('/');
+  }
+  
 });
 
 
 router.post('/search', async (req, res) => {
     try {
       const locals = {
-        title: "Seach",
+        title: "Search",
         description: "Simple Blog created with NodeJs, Express & MongoDb."
       }
   
@@ -131,7 +139,8 @@ router.post('/search', async (req, res) => {
       const data = await Post.find({
         $or: [
           { title: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
-          { body: { $regex: new RegExp(searchNoSpecialChar, 'i') }}
+          { body: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
+          {categorie: { $regex: new RegExp(searchNoSpecialChar, 'i')}}
         ]
       });
   
@@ -177,7 +186,22 @@ router.get('/contact', (req, res) => {
 
 //sign in
 
-router.get('/signIn', (req, res) => {
-    res.render('sign',{user : req.cookies.token});
+router.get('/register', (req, res) => {
+    res.render('Register',{user : req.cookies.token});
+});
+
+
+
+//satastics
+
+
+
+
+router.get('/chart', async (req, res) => {
+  try {
+    res.render('about');
+  } catch (err) {
+    res.status(500).send('Error generating chart image');
+  }
 });
 module.exports = router;
