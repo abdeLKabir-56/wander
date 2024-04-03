@@ -24,9 +24,10 @@
                 <% } %>
                 
                 <!-- More Details Form -->
-                <form action="/profile/<%= author._id %>?_method=DELETE" method="POST">
+                <form action="/profile/<%= author._id %>" method="POST">
                     <input type="submit" value="More Details" class="btn-delete btn">
                 </form>
+                
             </div>
         </li>
     <% }) %>

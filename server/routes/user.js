@@ -194,6 +194,8 @@ router.get('/edit-post/:id', isAuth('user'),async (req, res) => {
 router.put('/edit-post/:id', isAuth('user'), async (req, res) => {
     try {
         //console.log(req.file);
+        const categorie = req.body.categorie;
+        const author = req.userId;
         const category = new Categorie({
             Description: categorie,
                 author: author,
@@ -247,7 +249,10 @@ router.post('/dislike', isAuth('user'),async (req, res) => {
         const postId = req.body.postId;
         const userId = req.userId;
         const updatedPost = await Post.findByIdAndUpdate(postId,
-            { $addToSet: { dislikes: userId } },
+            { 
+                $addToSet: { dislikes: userId },
+                $pull: { likes: userId }
+            },
             { new: true }
         ).exec();
         res.redirect(`/post/${postId}`);

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 const jwtSecret = process.env.JWT_SECRET_KEY;
+const User = require('../models/user');
 router.use((req, res, next) => {
   if (!req.user) {
     
@@ -28,5 +29,31 @@ router.get('/', async(req, res) => {
     res.status(500).json({ message: 'Internal server error' });
  }
 });
+
+router.post('/profile/:id', async (req, res) => {
+  try {
+    let userID = req.params.id;
+    res.redirect(`/profile/${userID}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+router.get('/profile/:id', async (req, res) => {
+  try {
+    let userID = req.params.id;
+    const data = await User.findById(userID);
+    const locals = {
+      title: data.username,
+      content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
+    };
+    res.render('profile', { locals, data });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 module.exports = router;

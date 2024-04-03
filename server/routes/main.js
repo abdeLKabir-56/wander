@@ -140,7 +140,7 @@ router.post('/search', async (req, res) => {
         $or: [
           { title: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
           { body: { $regex: new RegExp(searchNoSpecialChar, 'i') }},
-          {categorie: { $regex: new RegExp(searchNoSpecialChar, 'i')}}
+          { 'categorie.Description': { $regex: new RegExp(searchNoSpecialChar, 'i') }}
         ]
       });
   
