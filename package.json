@@ -30,6 +30,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^8.2.0",
     "multer": "^1.4.5-lts.1",
+    "particles.js": "^2.0.0",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",

@@ -105,7 +105,10 @@ router.get('/post/:id', async (req, res) => {
       let id = req.params.id;
       const data = await Post.findById({_id : id})
       .populate('author', 'username')
-      .populate('comments')
+      .populate({
+        path: 'comments',
+        populate: { path: 'author', select: 'username' } // Populate the 'author' field of comments with 'username' field of the User
+      })
       .populate('categorie', 'Description');
       const locals ={
           title: data.title,

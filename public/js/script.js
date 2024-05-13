@@ -80,14 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
 //visit counter
 
 const socket = io();
-      const visitorCountEl = document.getElementById('visitor-count');
 
-      socket.on('visitorCount', (data) => {
-       /* if (data.postId === '<%= post._id %>') {
-          visitorCountEl.textContent = data.visitorCount;
-        }*/
-        visitorCountEl.textContent = data.visitorCount;
-      });
+        socket.on('visitorCount', (count) => {
+            document.getElementById('visitorCount').textContent = count;
+        });
 
 
 
@@ -135,4 +131,15 @@ document.querySelectorAll('.comment-actions button[data-action="edit"]').forEach
       } catch (err) {
         resultPara.textContent = `Error: ${err}`;
       }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const editButton = document.querySelector('.edit');
+      const editForm = document.querySelector('.editForm');
+  
+      editButton.addEventListener('click', function () {
+          editButton.classList.add('hidden');
+          editForm.classList.remove('hidden');
+      });
     });

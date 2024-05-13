@@ -87,7 +87,9 @@
     .comments-section{
         display: block;
     }
-   
+    .hidden {
+    display: none;
+}
 </style>
 <head>
 <div class="container">
@@ -95,29 +97,28 @@
     <h5><% if (data.author) { %>
         <%= data.author.username || '' %> |
          Created At: <%= data.updatedAt.toDateString() %> 
-        | <i class="fa-regular fa-eye"></i> <span id="visitor-count" ></span> |
+        | <i class="fa-regular fa-eye"></i> <span id="visitorCount">0</span> |
              </span> |<i class="fa-solid fa-icons"></i>
-        <% if (data.categorie.Description !== '') { %>
-            <%= data.categorie.Description%>
-        <% } else { %>
-            No category available
-        <% } %></h5>
+             <% if (data.categorie && data.categorie.Description !== '') { %>
+                <%= data.categorie.Description %>
+            <% } else { %>
+                No category available
+            <% } %></h5>
     <h5><% } else { %>
         Unknown Author |
          Created At: <%= data.updatedAt.toDateString() %> 
-        | <i class="fa-regular fa-eye"></i> <span id="visitor-count" data-post-id="<%= data._id %>"></span> |
+        | <i class="fa-regular fa-eye"></i> <span id="visitorCount">0</span> |
         <i class="fa-solid fa-icons"></i>
-        <% if (data.categorie.Description !== '') { %>
+        <% if (data.categorie && data.categorie.Description !== '') { %>
             <%= data.categorie.Description %>
         <% } else { %>
             No category available
         <% } %>
     <% } %></h5>
     
-    
 
    
-    <img src="/uploads/<%= data.image %>" />
+    <img src="/uploads/<% data.image %>" />
 
 
     <article class="article">
@@ -150,7 +151,7 @@
             </form>
             <form action="/signaler" method="POST">
                 <input type="hidden" name="postId" value="<%= data._id %>">
-                <button type="submit"><i class="fa-solid fa-circle-exclamation" style="color: #f70202;"></i> signaler le post</button>
+                <button type="submit"><i class="fa-solid fa-circle-exclamation" style="color: #f70202; padding: 1px;"></i> signaler le post</button>
             </form>
         </div>
     </div>
@@ -171,12 +172,12 @@
         <ul>
             <% if (postComment && postComment.length > 0) { %>
                 <% postComment.forEach(comment => { %>
-                    <div class="comment-container">
+                    <div class="comment-container" id="commentContainer-<%= comment._id %>">
                         <div class="user-info">
                             
                             <!--<img src="../public/images/user-avatar.png" alt="User Avatar">-->
                             <i class="fa-regular fa-user-circle" style="font-size: 20px; padding-right: 75%;"></i>
-                            <div class="username"><%= comment.author.username %></div>
+                            <div class="username" style="font-size: 20px;text-align: left;"><%= comment.author.username %></div>
                             <div style="text-align: right;"><%= comment.createdAt.toDateString() %></div>
                         </div>
                         <div class="comment-content">
@@ -194,11 +195,11 @@
                                 <input type="hidden" name="postId" value="<%= data._id %>">
                                 <input type="submit" value="Delete" class="btn-delete btn">
                               </form>
-                              <button onclick="toggleEditForm(event)">Edit</button>
+                        
+                            
+                              <button class="edit"><i class="fa-regular fa-edit"></i></button>
 
-                              
-                              <form class="editForm" action="/edit-comment/<%= comment._id %>?_method=PUT" method="POST" >
-                                 
+                              <form class="editForm hidden" action="/edit-comment/<%= comment._id %>?_method=PUT" method="POST">
                                   <div class="form-group">
                                       <input type="hidden" name="postId" value="<%= data._id %>">
                                       <input type="hidden" name="commentId" value="<%= comment._id %>">
@@ -208,7 +209,7 @@
                                   <!-- Submit button -->
                                   <input type="submit" class="btn btn-primary" value="Save">
                               </form>
-
+                              
                             </div>
                         </div>
                     </div>

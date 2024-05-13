@@ -96,7 +96,31 @@ router.get('/dashboard', isAuth('user'), async (req, res) => {
     }
 });
 
-
+router.post('/profile/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        console.log(userId);
+        res.redirect(`/profile/${userId}`);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+  });
+  
+  router.get('/profile/:id', async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const data = await User.findById(userId);
+      const locals = {
+        title: data.username,
+        content: 'Lorem Ipsum is simply dummy text.'
+      };
+      res.render('profile', { locals,user: data });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 
 //user - register

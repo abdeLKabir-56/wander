@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+
 const expressLayout = require('express-ejs-layouts');
 const connectDB = require('./server/config/db');
 const cookieParser = require('cookie-parser');
@@ -35,18 +36,20 @@ let visitorCount = 0;
 
 io.on('connection', (socket) => {
     visitorCount++;
+    io.emit('visitorCount', visitorCount);
 
-    socket.emit('visitorCount', visitorCount);
     socket.on('disconnect', () => {
+        visitorCount--;
         io.emit('visitorCount', visitorCount);
     });
 });
+
 //middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-app.use(express.static("./public"));
+
 app.use(methodOverride('_method'));
 app.use(session({
     secret: 'My secret',
@@ -59,7 +62,6 @@ app.use(session({
 // Initialize Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(express.static(path.join(__dirname, './public')));
 app.use(expressLayout);
 app.set('layout', './layouts/main');
@@ -68,6 +70,7 @@ app.set('view engine', 'ejs');
 // Routes setup
 app.use('/auth', authRoutes);
 app.use('/dashboard', userRoutes);
+app.use('/profile', profileRoutes);
 app.use('/', mainRoutes);
 app.use('/', userRoutes);
 app.use('/', adminRoutes);

@@ -23,7 +23,7 @@ passport.use(new FacebookStrategy({
   };
   const username = profile.displayName ? profile.displayName : name.familyName + name.givenName;
   const image = profile.photos[0].value;
-  User.findOne({ id: userId })
+  User.findOne({ id: userId, username:username,email:email})
       .then(currentUser => {
           if (currentUser) {
               // User already exists, update the information if necessary
@@ -70,7 +70,7 @@ passport.use(new GoogleStrategy({
     scope: ['profile', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        let currentUser = await User.findOne({ id: profile.id });
+        let currentUser = await User.findOne({ id: profile._id, email: profile.email,username: profile.username});
         if (currentUser) {
             // User already exists
             console.log('User already exists:', currentUser);
