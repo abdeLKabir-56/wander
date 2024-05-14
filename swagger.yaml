@@ -1,0 +1,579 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  description: Comprehensive API documentation covering multiple sections
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000/api/admin
+  - url: http://localhost:3000/api/auth
+paths:
+  # Admin API Section
+  /admin:
+    get:
+      summary: Get admin page
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Authenticate admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful authentication
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+  /register_admin:
+    post:
+      summary: Register admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful registration
+        '409':
+          description: User already in use
+        '500':
+          description: Internal server error
+  /admin_dashboard:
+    get:
+      summary: Get admin dashboard
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /allUsers:
+    get:
+      summary: Get all users
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /allPostSignaler:
+    get:
+      summary: Get all signaled posts
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /ban-user/{id}:
+    put:
+      summary: Ban a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to ban
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User banned successfully
+        '500':
+          description: Internal server error
+  /unban-user/{id}:
+    put:
+      summary: Unban a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to unban
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User unbanned successfully
+        '500':
+          description: Internal server error
+  /admin/delete-post/{id}:
+    delete:
+      summary: Delete a signaled post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the post to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post deleted successfully
+        '500':
+          description: Internal server error
+
+  # Authentication API Section
+  /google:
+    get:
+      summary: Authenticate with Google
+      responses:
+        '302':
+          description: Redirect to Google login page
+  /google/redirect:
+    get:
+      summary: Google authentication redirect endpoint
+      responses:
+        '302':
+          description: Redirect to profile page
+  /facebook:
+    get:
+      summary: Authenticate with Facebook
+      responses:
+        '302':
+          description: Redirect to Facebook login page
+  /facebook/redirect:
+    get:
+      summary: Facebook authentication redirect endpoint
+      responses:
+        '302':
+          description: Redirect to profile page
+
+  # Comment Management API Section
+  /post/comments:
+    post:
+      summary: Add a comment to a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Comment:
+                  type: string
+                postId:
+                  type: string
+              required:
+                - Comment
+                - postId
+      responses:
+        '302':
+          description: Redirect to post page
+        '500':
+          description: Internal server error
+  /comment/like:
+    post:
+      summary: Like a comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentId:
+                  type: string
+                postId:
+                  type: string
+              required:
+                - commentId
+                - postId
+      responses:
+        '302':
+          description: Redirect to post page
+        '500':
+          description: Internal server error
+  /delete-comment/{id}:
+    delete:
+      summary: Delete a comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the comment to delete
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to post page
+        '500':
+          description: Internal server error
+  /edit-comment/{id}:
+    get:
+      summary: Render edit comment form
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the comment to edit
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update a comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the comment to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                postId:
+                  type: string
+              required:
+                - description
+                - postId
+      responses:
+        '302':
+          description: Redirect to post page
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+
+  # Blog Management API Section
+  /:
+    get:
+      summary: Get all blog posts
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /post/{id}:
+    get:
+      summary: Get a specific blog post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the blog post to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /search:
+    post:
+      summary: Search for blog posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                searchTerm:
+                  type: string
+              required:
+                - searchTerm
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /chat:
+    post:
+      summary: Get a response from the chatbot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              required:
+                - message
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Invalid request body
+        '500':
+          description: Internal server error
+  /about:
+    get:
+      summary: Get the about page
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /contact:
+    get:
+      summary: Get the contact page
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /register:
+    get:
+      summary: Get the registration page
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+
+  # User Dashboard API Section
+  /:
+    get:
+      summary: Get user dashboard
+      responses:
+        '200':
+          description: Successful response
+        '302':
+          description: Redirect to login page
+        '500':
+          description: Internal server error
+
+  # User Management API Section
+  /user:
+    get:
+      summary: Get user dashboard
+      responses:
+        '200':
+          description: Successful response
+        '302':
+          description: Redirect to login page
+        '500':
+          description: Internal server error
+    post:
+      summary: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful authentication
+        '401':
+          description: Invalid credentials or banned user
+        '500':
+          description: Internal server error
+  /dashboard:
+    get:
+      summary: Get user dashboard
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /profile/{id}:
+    get:
+      summary: Get user profile by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user profile to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful registration
+        '409':
+          description: User already exists
+        '500':
+          description: Internal server error
+  /logout:
+    get:
+      summary: Logout user
+      responses:
+        '302':
+          description: Redirect to homepage
+  /add-post:
+    get:
+      summary: Get add post page
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+    post:
+      summary: Add a new post
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                categorie:
+                  type: string
+                image:
+                  type: string
+              required:
+                - title
+                - body
+                - image
+      responses:
+        '200':
+          description: Successful post addition
+        '400':
+          description: Please upload an image file
+        '500':
+          description: Internal server error
+  /edit-post/{id}:
+    get:
+      summary: Get edit post page by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the post to edit
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+    put:
+      summary: Edit an existing post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the post to edit
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                categorie:
+                  type: string
+                image:
+                  type: string
+              required:
+                - title
+                - body
+                - image
+      responses:
+        '200':
+          description: Successful post update
+        '500':
+          description: Internal server error
+  /delete-post/{id}:
+    delete:
+      summary: Delete a post by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the post to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful post deletion
+        '500':
+          description: Internal server error
+  /like:
+    post:
+      summary: Like a post
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /dislike:
+    post:
+      summary: Dislike a post
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error
+  /signaler:
+    post:
+      summary: Signal a post
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal server error

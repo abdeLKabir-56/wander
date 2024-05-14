@@ -7,6 +7,7 @@ const isAuth = require('../middleware/auth');
 router.get('/google', passport.authenticate('google', {
     scope: ['profile','email']
 }));
+
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
     console.log('redirect to dashboard'+req.user);
     res.redirect('/profile');

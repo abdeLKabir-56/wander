@@ -103,13 +103,13 @@ router.get('/post/:id', async (req, res) => {
   try{
     
       let id = req.params.id;
-      const data = await Post.findById({_id : id})
-      .populate('author', 'username')
-      .populate({
-        path: 'comments',
-        populate: { path: 'author', select: 'username' } // Populate the 'author' field of comments with 'username' field of the User
-      })
-      .populate('categorie', 'Description');
+      const data = await Post.findById(id)
+  .populate('author', 'username')
+  .populate({
+    path: 'comments',
+    populate: { path: 'author', select: 'username' }
+  })
+  .populate('categorie', 'Description');
       const locals ={
           title: data.title,
           content : 'lorem Ipsum  is simply dumm  dolor Lorem Ipsum is simply ipsum. Lorem Ips'

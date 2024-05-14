@@ -22,6 +22,10 @@ const server = http.createServer(app);
 const io = new Server(server);
 const Post = require('./server/models/blog');
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 // Import routes
 const mainRoutes = require('./server/routes/main');
@@ -43,6 +47,21 @@ io.on('connection', (socket) => {
         io.emit('visitorCount', visitorCount);
     });
 });
+//swagger
+const options = {
+    swaggerDefinition: {
+      info: {
+        title: 'Wander Rest APIs',
+        version: '1.0.0',
+        description: 'This documentation is made using Swagger to showcase the APIs and their functionalities',
+      },
+    },
+    apis: ['./server/routes/*.js'], // Path to the API routes
+  };
+  
+
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //middleware
 app.use(express.urlencoded({ extended: true }));
@@ -75,8 +94,6 @@ app.use('/', mainRoutes);
 app.use('/', userRoutes);
 app.use('/', adminRoutes);
 app.use('/', commentRoutes);
-
-
 
 
 
