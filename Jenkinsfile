@@ -10,6 +10,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+							// Configure Git to use a larger buffer
+                    sh 'git config --global http.postBuffer 524288000'
+                    sh 'git config --global http.maxRequestBuffer 100M'
                 // Clone the repository
                 git branch: 'backendProject2', url: 'https://github.com/abdeLKabir-56/wander.git'
             }
