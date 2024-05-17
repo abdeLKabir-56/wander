@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
-        DOCKER_CREDENTIALS_ID = 'dckr_pat_K3kq-wgsBqHiWrFyO8dZ9NXLYcU'
+        DOCKER_CREDENTIALS_ID = 'dockerhub_id'
     }
 
     stages {
