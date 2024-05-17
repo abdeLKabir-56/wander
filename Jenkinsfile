@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
+        DOCKER_CREDENTIALS_ID = 'dockerhub_id'
     }
 
     stages {
@@ -24,7 +24,7 @@ pipeline {
                 '''
             }
         }
-         stage('Install Dependencies') {
+        stage('Install Dependencies') {
             steps {
                 script {
                     echo 'Install Dependencies step'
@@ -53,10 +53,11 @@ pipeline {
         }
         stage('Login') {
             steps {
-               sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    bat 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
                 }
             }
-        
+        }
         stage('Push Docker Image') {
             steps {
                 script {
