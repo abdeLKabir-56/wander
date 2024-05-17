@@ -24,12 +24,12 @@ pipeline {
                 '''
             }
         }
-        stage('Install Dependencies') {
+         stage('Install Dependencies') {
             steps {
                 script {
                     echo 'Install Dependencies step'
-                    // Install Node.js dependencies
-                    bat 'npm install'
+                    // Install Node.js dependencies with legacy-peer-deps flag
+                    bat 'npm install --legacy-peer-deps'
                 }
             }
         }
