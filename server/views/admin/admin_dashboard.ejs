@@ -1,0 +1,52 @@
+<!-- Admin Title and Add New Button -->
+<div class="admin-title">
+    <h2>Author List</h2>
+    <a href="/add-author" class="button">+ Add New</a>
+</div>
+
+<!-- List of Authors -->
+<ul class="admin-posts">
+    <% users.forEach(author => { %>
+        <li>
+            <a href="#">
+                <%= author.username %> | <%= author.role %> &nearr;
+            </a>
+            <div class="admin-post-controls">
+                <!-- Ban/Unban User Button -->
+                <% if (author.banned === true) { %>
+                    <form action="/unban-user/<%= author._id %>?_method=PUT" method="POST">
+                        <input type="submit" value="Unban User" class="btn">
+                    </form>
+                <% } else { %>
+                    <form action="/ban-user/<%= author._id %>?_method=PUT" method="POST">
+                        <input type="submit" value="Ban User" class="btn">
+                    </form>
+                <% } %>
+                
+                <!-- More Details Form -->
+                <form action="/profile/<%= author._id %>" method="POST">
+                    <input type="submit" value="More Details" class="btn-delete btn">
+                </form>
+                
+            </div>
+        </li>
+    <% }) %>
+</ul>
+<div class="admin-title">
+    <h2>Post Signaler</h2>
+</div>
+<ul class="admin-posts">
+    <% PostSignaler.forEach(post => { %>
+        <li>
+            <a href="#">
+                <%= post.title %> | <%= post.author.username %> &nearr;
+            </a>
+            <div class="admin-post-controls">
+                <!-- More Details Form -->
+                <form action="/admin/delete-post/<%= post._id %>?_method=DELETE" method="POST">
+                    <input type="submit" value="Delete Post" class="btn-delete btn">
+                </form>
+            </div>
+        </li>
+    <% }) %>
+</ul>
