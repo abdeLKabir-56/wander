@@ -8,6 +8,12 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                echo 'Cleaning workspace'
+                deleteDir() // Clean up the workspace
+            }
+        }
         stage('Checkout') {
             steps {
                 echo 'Checkout step'
