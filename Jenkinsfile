@@ -47,25 +47,23 @@ pipeline {
                 script {
                     echo 'Building step'
                     // Build Docker image
-                    bat "docker build -t %DOCKER_IMAGE_NAME%:latest ."
+                    bat "docker build -t ${env.DOCKER_IMAGE_NAME}:latest ."
                 }
             }
         }
-        stage('Docker Login') {
-		      steps {
-		    				script {
-		        			docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-		            	dockerImage.push()
-		        				}
-		    					}
-				}
+        stage('Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                }
+            }
         }
         stage('Push Docker Image') {
             steps {
                 script {
                     echo 'Image push step'
                     // Push Docker image to Docker Hub
-                    bat "docker push %DOCKER_IMAGE_NAME%:latest"
+                    bat "docker push ${env.DOCKER_IMAGE_NAME}:latest"
                 }
             }
         }
