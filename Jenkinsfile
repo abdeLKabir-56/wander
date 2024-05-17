@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
-        DOCKER_CREDENTIALS_ID = 'dckr_pat_oUcmfKGZ8HTmeYyfYyjW6uCLMSM'
+        DOCKER_CREDENTIALS_ID = 'dckr_pat_K3kq-wgsBqHiWrFyO8dZ9NXLYcU'
     }
 
     stages {
@@ -56,8 +56,8 @@ pipeline {
                 script {
                     // Login to Docker Hub
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
-                    }
+    									sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+								}
                 }
             }
         }
