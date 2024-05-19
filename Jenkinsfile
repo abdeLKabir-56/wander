@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '14' // Specify the Node.js version
+        NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
     }
@@ -17,49 +17,65 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checkout step'
-                git branch: 'backendProject2', url: 'https://github.com/abdeLKabir-56/wander.git'
+                bat '''
+                git config --global http.postBuffer 524288000
+                git config --global http.maxRequestBuffer 100M
+                git clone -b backendProject2 https://github.com/abdeLKabir-56/wander.git .
+                '''
             }
         }
         stage('Install Dependencies') {
             steps {
-                echo 'Install Dependencies step'
-                sh 'npm install --legacy-peer-deps'
+                script {
+                    echo 'Install Dependencies step'
+                    // Install Node.js dependencies with legacy-peer-deps flag
+                    bat 'npm install --legacy-peer-deps'
+                }
             }
         }
         stage('Test') {
             steps {
-                echo 'Test step'
-                // Run tests (update the script if you add actual tests)
-                sh 'npm test'
+                script {
+                    echo 'Test step'
+                    // Run tests (update the script if you add actual tests)
+                    bat 'npm test'
+                }
             }
         }
         stage('Build Docker Image') {
             steps {
-                echo 'Building step'
-                // Build Docker image
-                sh "docker build -t ${env.DOCKER_IMAGE_NAME}:latest ."
+                script {
+                    echo 'Building step'
+                    // Build Docker image
+                    bat "docker build -t ${env.DOCKER_IMAGE_NAME}:latest ."
+                }
             }
         }
         stage('Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    echo 'Logging into Docker Hub'
-                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    bat '''
+                    echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
+                    '''
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                echo 'Image push step'
-                // Push Docker image to Docker Hub
-                sh "docker push ${env.DOCKER_IMAGE_NAME}:latest"
+                script {
+                    echo 'Image push step'
+                    // Push Docker image to Docker Hub
+                    bat "docker push ${env.DOCKER_IMAGE_NAME}:latest"
+                }
             }
         }
         stage('Deploy with Docker Compose') {
             steps {
-                echo 'Image deploy step'
-                // Deploy the application using Docker Compose
-                sh 'docker-compose up -d'
+                script {
+                    echo 'Image deploy step'
+                    // Deploy the application using Docker Compose
+                    bat 'docker-compose up -d'
+                }
             }
         }
     }
@@ -69,7 +85,7 @@ pipeline {
             script {
                 // Cleanup workspace and Docker containers
                 cleanWs()
-                sh 'docker-compose down'
+                bat 'docker-compose down'
             }
         }
         success {
