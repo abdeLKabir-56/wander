@@ -14,17 +14,16 @@ pipeline {
         deleteDir() // Clean up the workspace
       }
     }
-    stage('Checkout') {
-      steps {
-        echo 'Checkout step'
-        script {
-          // Configure Git settings (optional)
-          sh 'git config --global http.postBuffer 524288000 && git config --global http.maxRequestBuffer 100M'
-          // Checkout code using sh instead of bat for better compatibility
-          sh 'git clone -b backendProject2 https://github.com/abdeLKabir-56/wander.git .'
-        }
-      }
-    }
+   stage('Checkout') {
+      steps {
+        echo 'Checkout step'
+        bat '''
+        git config --global http.postBuffer 524288000
+        git config --global http.maxRequestBuffer 100M
+        git clone -b backendProject2 https://github.com/abdeLKabir-56/wander.git .
+        '''
+      }
+    }
     stage('Install Dependencies') {
       steps {
         script {
