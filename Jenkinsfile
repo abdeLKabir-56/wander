@@ -23,10 +23,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Install Dependencies step'
-                // Install Node.js using nvm
-                sh "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash"
-                sh "source ~/.bashrc && nvm install ${env.NODE_VERSION} && nvm use ${env.NODE_VERSION}"
-                // Install Node.js dependencies with npm
                 sh 'npm install --legacy-peer-deps'
             }
         }
