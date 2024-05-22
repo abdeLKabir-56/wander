@@ -18,7 +18,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checkout step'
-                bat '''
+                sh '''
                 git config --global http.postBuffer 524288000
                 git config --global http.maxRequestBuffer 100M
                 git clone -b backendProject2 https://github.com/abdeLKabir-56/wander.git .
@@ -42,20 +42,16 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building step'
-                sh "docker build -t ${env.DOCKER_IMAGE_NAME}:latest ."
+                echo 'Build Docker Image step'
+                sh "docker build -t ${DOCKER_IMAGE_NAME}:latest ."
             }
         }
 
-        stage('Login to Docker Hub (Optional)') {
+        stage('Login to Docker Hub') {
             steps {
                 script {
-                    if (env.DOCKERHUB_CREDENTIALS) {
-                        withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                            sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        }
-                    } else {
-                        echo "No Docker Hub credentials found. Skipping login."
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                     }
                 }
             }
@@ -64,19 +60,15 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    echo 'Image push step'
-                    if (env.DOCKERHUB_CREDENTIALS) {
-                        sh "docker push ${env.DOCKER_IMAGE_NAME}:latest"
-                    } else {
-                        echo "No Docker Hub credentials found. Skipping push."
-                    }
+                    echo 'Push Docker Image step'
+                    sh "docker push ${DOCKER_IMAGE_NAME}:latest"
                 }
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                echo 'Image deploy step'
+                echo 'Deploy with Docker Compose step'
                 sh 'docker-compose up -d'
             }
         }
@@ -84,10 +76,8 @@ pipeline {
 
     post {
         always {
-            script {
-                cleanWs()
-                sh 'docker-compose down'
-            }
+            cleanWs()
+            sh 'docker-compose down'
         }
         success {
             echo 'Build, Docker image push, and deployment successful!'
