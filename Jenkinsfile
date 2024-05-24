@@ -46,7 +46,7 @@ pipeline {
     steps {
         script {
             echo 'Building Docker image...'
-            sh "docker build -t ${env.DOCKER_IMAGE_NAME}:latest . || exit 1"
+            bat "docker build -t ${env.DOCKER_IMAGE_NAME}:latest . || exit 1"
         }
     }
 }
