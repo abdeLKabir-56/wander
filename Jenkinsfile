@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
-        DOCKER_CREDENTIALS_ID = 'dockerhub_id'
+        DOCKERHUB_CREDENTIALS= credentials('dockerhub_id')
     }
 
     stages {
@@ -50,18 +50,12 @@ pipeline {
         }
     }
 }
-        stage('Login') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        def dockerLoginCommand = """
-                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-                        """
-                        bat dockerLoginCommand
-                    }
-                }
-            }
-        }
+       stage('Login to Docker Hub') {      	
+    steps{                       	
+	sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'                		
+	echo 'Login Completed'      
+    }           
+}   
         stage('Push Docker Image') {
             steps {
                 script {
