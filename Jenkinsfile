@@ -43,14 +43,13 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            steps {
-                script {
-                    echo 'Building step'
-                    // Build Docker image
-                    bat "docker build -t ${env.DOCKER_IMAGE_NAME}:latest ."
-                }
-            }
+    steps {
+        script {
+            echo 'Building Docker image...'
+            sh "docker build -t ${env.DOCKER_IMAGE_NAME}:latest . || exit 1"
         }
+    }
+}
         stage('Login') {
             steps {
                 withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
