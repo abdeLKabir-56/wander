@@ -4,7 +4,7 @@ pipeline {
     environment {
         NODE_ENV = 'development'
         DOCKER_IMAGE_NAME = 'abdel2334/social_media_blog_platform_project'
-        DOCKERHUB_CREDENTIALS= credentials('dockerhub_id')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
     }
 
     stages {
@@ -43,33 +43,37 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-    steps {
-        script {
-            echo 'Building Docker image...'
-            bat "docker build -t ${env.DOCKER_IMAGE_NAME}:latest . || exit 1"
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    bat "docker build -t ${DOCKER_IMAGE_NAME}:latest . || exit 1"
+                }
+            }
         }
-    }
-}
-       stage('Login to Docker Hub') {      	
-    steps{                       	
-	bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'                		
-	echo 'Login Completed'      
-    }           
-}   
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    echo 'Logging in to Docker Hub...'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        bat """
+                        echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
+                        """
+                    }
+                }
+            }
+        }
         stage('Push Docker Image') {
             steps {
                 script {
-                    echo 'Image push step'
-                    // Push Docker image to Docker Hub
-                    bat "docker push ${env.DOCKER_IMAGE_NAME}:latest"
+                    echo 'Pushing Docker image...'
+                    bat "docker push ${DOCKER_IMAGE_NAME}:latest"
                 }
             }
         }
         stage('Deploy with Docker Compose') {
             steps {
                 script {
-                    echo 'Image deploy step'
-                    // Deploy the application using Docker Compose
+                    echo 'Deploying with Docker Compose...'
                     bat 'docker-compose up -d'
                 }
             }
