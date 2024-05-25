@@ -83,10 +83,9 @@ pipeline {
     post {
         always {
             script {
-                // Cleanup workspace and Docker containers
-                cleanWs()
-                bat 'docker-compose down'
+                bat 'docker-compose -f C:/Users/info/Desktop/social_media_blog_platform_project/docker-compose.yml down'
             }
+            cleanWs() // Clean up the workspace
         }
         success {
             echo 'Build, Docker image push, and deployment successful!'
