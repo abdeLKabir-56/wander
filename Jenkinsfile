@@ -74,7 +74,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying with Docker Compose...'
-                    bat 'docker-compose -f C:\Users\info\Desktop\social_media_blog_platform_project\docker-compose.yml up -d'
+                    bat 'docker-compose -f C:/Users/info/Desktop/social_media_blog_platform_project/docker-compose.yml up -d'
                 }
             }
         }
