@@ -5,13 +5,13 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_LOCAL_URL=mongodb://mongo:27018/wander
+      - MONGO_LOCAL_URL=mongodb://mongo:27017/wander # Update this URL if necessary
     depends_on:
       - mongo
   mongo:
     image: mongo:4.4
     ports:
-      - "27018:27018"
+      - "27017:27017" # Change the host port to a different port, for example, 27018
     volumes:
       - mongo-data:/data/db
 
