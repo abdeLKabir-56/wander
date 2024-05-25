@@ -74,7 +74,10 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying with Docker Compose...'
-                    bat 'docker-compose -f docker-compose.yml up -d'
+                    //bat 'docker-compose -f docker-compose.yml up -d'
+									dir('wander') { // Adjust to the directory where the project was cloned
+                        bat 'docker-compose up -d'
+                    }
                 }
             }
         }
