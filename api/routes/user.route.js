@@ -4,7 +4,7 @@ import {
   getUser,
   getUsers,
   signout,
-  test,
+  test, 
   updateUser,
 } from '../controllers/user.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';

@@ -11,12 +11,12 @@ import path from 'path';
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO)
+  .connect("mongodb+srv://aminellmechrafi:amine9864@cluster0.em6auj5.mongodb.net/mern-blog?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => {
-    console.log('MongoDb is connected');
+    console.log('MongoDb is connectedd');
   })
   .catch((err) => {
-    console.log(err);
+    console.log("error"+err);
   });
 
 const __dirname = path.resolve();
