@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    likes: {
+      type: Array,
+      default: [],
+    },
+    numberOfLikes: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

@@ -1,7 +1,11 @@
 import { Button, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import CallToAction from '../components/CallToAction';
+import { FcLikePlaceholder } from "react-icons/fc";
+import { FcLike } from "react-icons/fc";
+import { FcShare } from "react-icons/fc";
+import {ShareSocial} from 'react-share-social' 
+
 import CommentSection from '../components/CommentSection';
 import PostCard from '../components/PostCard';
 
@@ -11,6 +15,16 @@ export default function PostPage() {
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
   const [recentPosts, setRecentPosts] = useState(null);
+  const [liked , setLiked]=useState(false);
+  const [nbrLikes , setNumberLikes]=useState(0)
+
+  const handleLiked=()=>{
+    setLiked(!liked)
+    if(liked)
+      setNumberLikes(1)
+    else
+    setNumberLikes(0)
+  }
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -85,8 +99,12 @@ export default function PostPage() {
         className='p-3 max-w-2xl mx-auto w-full post-content'
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
-      <div className='max-w-4xl mx-auto w-full'>
-        <CallToAction />
+      <div className='flex flex-col justify-center items-center gap-2   p-3  max-w-2xl mx-auto w-full   '>
+     <button onClick={handleLiked}> {liked ? <FcLikePlaceholder size={25} /> : <FcLike size={25} />}</button>
+     <p>{nbrLikes}</p>
+     <p className='mt-8 mb-0 font-lexend font-bold text-slate-800 text-2xl'>Share now On</p>
+     <ShareSocial url ={window.location.href} className="mt"
+     socialTypes={['facebook','twitter','whatsapp','linkedin' ] } />
       </div>
       <CommentSection postId={post._id} />
 

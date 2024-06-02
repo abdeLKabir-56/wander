@@ -1,6 +1,12 @@
+import dotenv from 'dotenv'
+import 'dotenv/config'
+dotenv.config();
+
+console.log('MONGO:', process.env.MONGO); // This should print your MongoDB connection string
+console.log('JWT_SECRET:', process.env.JWT_SECRET); // This should print your JWT secret
+
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import postRoutes from './routes/post.route.js';
@@ -8,15 +14,13 @@ import commentRoutes from './routes/comment.route.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-dotenv.config();
-
 mongoose
-  .connect("mongodb+srv://aminellmechrafi:amine9864@cluster0.em6auj5.mongodb.net/mern-blog?retryWrites=true&w=majority&appName=Cluster0")
+  .connect(process.env.MONGO)
   .then(() => {
-    console.log('MongoDb is connectedd');
+    console.log('MongoDb is connected');
   })
   .catch((err) => {
-    console.log("error"+err);
+    console.log('Error connecting to MongoDb:', err);
   });
 
 const __dirname = path.resolve();

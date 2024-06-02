@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {},
+    fontFamily :{
+      lexend:["lexend"]
+    }
   },
   plugins: [
     require('flowbite/plugin'),

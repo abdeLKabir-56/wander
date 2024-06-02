@@ -2,9 +2,9 @@ import Post from '../models/post.model.js';
 import { errorHandler } from '../utils/error.js';
 
 export const create = async (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return next(errorHandler(403, 'You are not allowed to create a post'));
-  }
+  // if (!req.user.isAdmin) {
+  //   return next(errorHandler(403, 'You are not allowed to create a post'));
+  // }
   if (!req.body.title || !req.body.content) {
     return next(errorHandler(400, 'Please provide all required fields'));
   }
@@ -71,6 +71,8 @@ export const getposts = async (req, res, next) => {
   }
 };
 
+
+
 export const deletepost = async (req, res, next) => {
   if (!req.user.isAdmin || req.user.id !== req.params.userId) {
     return next(errorHandler(403, 'You are not allowed to delete this post'));
@@ -84,9 +86,9 @@ export const deletepost = async (req, res, next) => {
 };
 
 export const updatepost = async (req, res, next) => {
-  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to update this post'));
-  }
+  // if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+  //   return next(errorHandler(403, 'You are not allowed to update this post'));
+  // }
   try {
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.postId,

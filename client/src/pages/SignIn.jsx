@@ -8,6 +8,7 @@ import {
   signInFailure,
 } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
+import OAuthFb from '../components/OAuthFb';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -39,7 +40,7 @@ export default function SignIn() {
         navigate('/');
       }
     } catch (error) {
-      dispatch(signInFailure(error.message));
+      dispatch(signInFailure(error.message +"hh"));
     }
   };
   return (
@@ -95,6 +96,7 @@ export default function SignIn() {
               )}
             </Button>
             <OAuth />
+            <OAuthFb />
           </form>
           <div className='flex gap-2 text-sm mt-5'>
             <span>Dont Have an account?</span>
