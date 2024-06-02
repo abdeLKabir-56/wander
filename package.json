@@ -1,15 +1,19 @@
 {
   "name": "social_media_blog_platform_project",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A social media blog platform project",
+  "main": "app.js",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "start": "app.js",
+    "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "social media",
+    "blog",
+    "platform"
+  ],
+  "author": "abdel101",
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.3.0",
@@ -26,7 +30,6 @@
     "express": "^4.18.2",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
-    "fs": "^0.0.1-security",
     "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
