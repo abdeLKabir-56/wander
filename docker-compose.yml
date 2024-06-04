@@ -6,14 +6,14 @@ services:
       - "5000:5000"
     environment:
       - MONGO_LOCAL_URL=mongodb://mongo:27017/wander # Update this URL if necessary
-      - MONGO_URL=mongodb+srv://elhamoussiabdelkabir:IkIglpa0cbd82iMP@cluster0.vyhox1y.mongodb.net/cluster0
-      - JWT_SECRET_KEY=elhamoussiabdelkabirsECRETKEY
-      - CHAT_API_KEY=AIzaSyAzK0gkuz2AOGIZaJoCB3zHRsBLgZp_P5s
-      - clientID_Facebook=3253719501439563
-      - ClientSecret_Facebook=67e538e061965bbfbfb1c40da1520def
-      - clientID_Google=529615139088-4ri4bc9s8g6f4g242vsisqiqoba617bm.apps.googleusercontent.com
-      - ClientSecret_Google=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
-      - cookieKey=abdelelhamoubirssiawsomeis
+      - MONGO_URL # MongoDB URL (e.g., mongodb+srv://username:password@cluster0.example.mongodb.net/dbname)
+      - JWT_SECRET_KEY # JWT secret key
+      - CHAT_API_KEY # Chat API key
+      - clientID_Facebook # Facebook Client ID
+      - ClientSecret_Facebook # Facebook Client Secret
+      - clientID_Google # Google Client ID
+      - ClientSecret_Google # Google Client Secret
+      - cookieKey # Cookie key
     depends_on:
       - mongo
   mongo:
