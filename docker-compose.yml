@@ -1,0 +1,27 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_LOCAL_URL=mongodb://mongo:27017/wander # Update this URL if necessary
+      - MONGO_URL # MongoDB URL (e.g., mongodb+srv://username:password@cluster0.example.mongodb.net/dbname)
+      - JWT_SECRET_KEY # JWT secret key
+      - CHAT_API_KEY # Chat API key
+      - clientID_Facebook # Facebook Client ID
+      - ClientSecret_Facebook # Facebook Client Secret
+      - clientID_Google # Google Client ID
+      - ClientSecret_Google # Google Client Secret
+      - cookieKey # Cookie key
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27018:27017" # Change the host port to a different port, for example, 27018
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

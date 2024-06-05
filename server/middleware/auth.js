@@ -13,7 +13,7 @@ const isAuth = (requiredRole = null) => {
       const decoded = jwt.verify(token, jwtSecret);
       req.userId = decoded.userId;
      //console.log(requiredRole+'=='+decoded.userRole);
-      if (requiredRole && decoded.userRole !== requiredRole) {
+      if ((requiredRole && decoded.userRole !== requiredRole)) {
         return res.status(403).json({ message: 'Forbidden: Required role not found' });
       }
 

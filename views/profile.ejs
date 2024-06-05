@@ -1,0 +1,42 @@
+<html>
+<head>
+</head>
+<body>
+    <header>
+        <h1>Welcome to your profile, <%= user.username %></h1>
+    </header>
+    <a href="/admin_dashboard">&larr; Back</a>
+    <main>
+        <% if (user.image && user.image.length > 0 && user.image[0].value) { %>
+            <img src="<%= user.image[0].value %>" />
+            <p>This is your profile photo</p>
+        <% } else { %>
+            <p>No profile photo available</p>
+        <% } %>
+        <% if (user.name && user.name.givenName) { %>
+            <h4>First Name: <%= user.name.givenName %></h4>
+        <% } else { %>
+            <h4>First Name: Not available</h4>
+        <% } %>
+        <% if (user.name && user.name.familyName) { %>
+            <h4>Family Name: <%= user.name.familyName %></h4>
+        <% } else { %>
+            <h4>Family Name: Not available</h4>
+        <% } %>
+        <% if (user.email) { %>
+            <h4>Email: <%= user.email %></h4>
+        <% } else { %>
+            <h4>Email: Not available</h4>
+        <% } %>
+        <% if (user.bio) { %>
+            <h4>Bio: <%= user.bio %></h4>
+        <% } else { %>
+            <h4>Bio: Not available</h4>
+        <% } %>
+    </main>
+
+    <main>
+        <a class="edit-profile" href="/profile/edit">Edit Profile</a>
+    </main>
+</body>
+</html>
