@@ -56,10 +56,55 @@ The project includes comprehensive API documentation using the OpenAPI Specifica
 
 To get started with Wander, follow these steps:
 
-1. Clone the repository to your local machine.
-2. Install dependencies using npm or yarn.
-3. Set up environment variables using a .env file.
-4. Run the application using Node.js.
+
+1. Clone the repository to your local machine:
+   ```bash
+   git clone https://github.com/abdeLKabir-56/wander
+   ```
+2. Install dependency using npm or yarn:
+   ```bash
+   npm install
+   OR
+   yarn install
+   ```
+3. Set up environment variables using a .env file. Refer to the section below for the required variables.
+4. Run the application using npm or yarn :
+   ```bash
+   npm run dev
+   OR
+   yarn start
+   ```
+
+
+# Environment Variables
+
+To ensure the application runs smoothly, please configure the following environment variables in your `.env` file.
+
+---
+
+## Required Environment Variables
+
+| **Variable**               | **Description**                                                                                                                                       |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `COOKIE_KEY`               | A **secret key** used for signing cookies. It ensures the integrity and security of the cookie data exchanged between the client and the server.     |
+| `CLIENT_SECRET_FACEBOOK`   | The **client secret** provided by Facebook for OAuth authentication. It is used to authenticate requests to Facebook's API when users log in.        |
+| `CLIENT_ID_FACEBOOK`       | The **client ID** assigned by Facebook for your application. This ID is used to identify your app when making requests to the Facebook API.           |
+| `CLIENT_SECRET_GOOGLE`     | The **client secret** provided by Google for OAuth authentication. It is required to authenticate and authorize users through Google Sign-In.         |
+| `CLIENT_ID_GOOGLE`         | The **client ID** assigned by Google for your application. It is used to identify your app in requests made to Google APIs.                           |
+| `MONGO_LOCAL_URL`          | The **connection string** for your local MongoDB database. This URL is used to connect the application to your MongoDB instance.                      |
+| `JWT_SECRET_KEY`           | A **secret key** used for signing JSON Web Tokens (JWTs). This key is crucial for creating and verifying JWTs for user authentication.                |
+| `CHAT_API_KEY`             | The **API key** used to authenticate requests to the chat service. It is necessary for enabling chat functionalities within the application.            |
+| `PORT`                      | The **port number** on which the application will run. By default, it is often set to `3000` but can be configured to any other available port.     |
+
+---
+
+## Important Notes
+
+- Ensure to replace any placeholders with the actual values when setting up your `.env` file.
+- It is a good practice to keep your `.env` file out of version control (e.g., using `.gitignore`) to protect sensitive information.
+
+
+         
 
 ## Contributing
 
